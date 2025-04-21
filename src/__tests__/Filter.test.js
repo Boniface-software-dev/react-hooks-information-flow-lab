@@ -1,18 +1,30 @@
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Filter from "../components/Filter";
+import App from "../components/App";
 
-test("displays the <select> element", () => {
-  render(<Filter />);
-  expect(screen.queryByRole("combobox")).toBeInTheDocument();
+test("displays in 'light' mode when initialized", () => {
+  const { container } = render(<App />);
+  expect(container.querySelector(".light")).toBeInTheDocument();
 });
 
-test("calls the onCategoryChange callback prop when the <select> is changed", () => {
-  const onCategoryChange = jest.fn();
-  render(<Filter onCategoryChange={onCategoryChange} />);
+test("changes to 'dark' mode when the button is clicked", () => {
+  const { container } = render(<App />);
+  expect(container.querySelector(".light")).toBeInTheDocument();
 
-  fireEvent.change(screen.queryByRole("combobox"), {
-    target: { value: "Dairy" },
-  });
-  expect(onCategoryChange).toHaveBeenCalled();
+  fireEvent.click(screen.getByText(/ Mode/));
+
+  expect(container.querySelector(".dark")).toBeInTheDocument();
+});
+
+test("changes back to 'light' mode when the button is clicked twice", () => {
+  const { container } = render(<App />);
+  expect(container.querySelector(".light")).toBeInTheDocument();
+
+  fireEvent.click(screen.getByText(/ Mode/));
+
+  expect(container.querySelector(".dark")).toBeInTheDocument();
+
+  fireEvent.click(screen.getByText(/ Mode/));
+
+  expect(container.querySelector(".light")).toBeInTheDocument();
 });
